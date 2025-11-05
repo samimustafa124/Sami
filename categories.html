@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APEX Gear - Teams & Categories</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* Category Specific Styling */
+    .category-card {
+        overflow: hidden;
+        position: relative;
+        min-height: 350px;
+        color: var(--text-light); /* Ensure text is light on dark overlay */
+        border: none;
+    }
+    .category-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: transform 0.5s ease-in-out;
+    }
+    .category-card:hover img {
+        transform: scale(1.05);
+    }
+    .category-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end; /* Align content to the bottom */
+        padding: 2rem;
+        z-index: 10;
+        transition: background 0.3s ease;
+    }
+    .category-card:hover .category-overlay {
+        background: rgba(0, 0, 0, 0.7); /* Darker overlay on hover */
+    }
+    .category-overlay h3 {
+        color: var(--secondary-color);
+        font-family: 'Oswald', sans-serif;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<?php include_once('admin_login.html'); ?>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+        <img src="https://via.placeholder.com/30x30/FFFFFF/FF4500?text=A" alt="APEX Logo" style="height: 30px; margin-right: 8px;">
+        APEX Gear
+    </a>
+    
+    <button onclick="loadAdminModal()" class="btn btn-sm"
+            style="color: var(--text-light); background-color: var(--primary-color); border: none; cursor: pointer; user-select: none; font-size: 0.75em; margin-left: 10px; padding: 4px 8px;">
+      ADMIN ACCESS
+    </button>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav" id="main-navbar-links">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="shop.html">Shop Merch 🏎️</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="categories.html">Teams</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-5">
+  <h1 class="text-center mb-5">Explore Official Racing Categories 🏁</h1>
+  
+  <div class="row g-4">
+    
+    <div class="col-md-6 col-lg-8">
+      <a href="shop.html?category=F1" class="text-decoration-none">
+        <div class="card category-card shadow-sm">
+          <img src="https://images.unsplash.com/photo-1621327126136-2319b2518e1d?q=80&w=1974&auto=format&fit=crop" alt="F1 Racing">
+          <div class="category-overlay">
+            <h3>FORMULA 1 <i class="fas fa-grip-lines-vertical"></i></h3>
+            <p class="lead">The pinnacle of motorsport apparel and collectibles. High speed, high style.</p>
+            <button class="btn btn-primary w-50 mt-2">View F1 Gear</button>
+          </div>
+        </div>
+      </a>
+    </div>
+    
+    <div class="col-md-6 col-lg-4">
+      <a href="shop.html?category=MotoGP" class="text-decoration-none">
+        <div class="card category-card shadow-sm">
+          <img src="https://images.unsplash.com/photo-1617062496522-83b5ed16f8ec?q=80&w=2070&auto=format&fit=crop" alt="MotoGP">
+          <div class="category-overlay">
+            <h3>MOTOGP</h3>
+            <p class="lead small">Official high-octane motorcycle racing merchandise.</p>
+            <button class="btn btn-primary mt-2">View MotoGP Gear</button>
+          </div>
+        </div>
+      </a>
+    </div>
+    
+    <div class="col-md-6 col-lg-4">
+      <a href="shop.html?category=GT3" class="text-decoration-none">
+        <div class="card category-card shadow-sm">
+          <img src="https://images.unsplash.com/photo-1601783088926-2183c51ef67e?q=80&w=2070&auto=format&fit=crop" alt="GT3 Racing">
+          <div class="category-overlay">
+            <h3>GT3 RACING</h3>
+            <p class="lead small">Endurance sports car teams and manufacturers.</p>
+            <button class="btn btn-primary mt-2">View GT3 Merch</button>
+          </div>
+        </div>
+      </a>
+    </div>
+    
+    <div class="col-md-6 col-lg-8">
+      <a href="shop.html?category=Collectible" class="text-decoration-none">
+        <div class="card category-card shadow-sm">
+          <img src="https://images.unsplash.com/photo-1621289133499-c88f347320b9?q=80&w=2071&auto=format&fit=crop" alt="Collectibles">
+          <div class="category-overlay">
+            <h3>COLLECTIBLES / SCALE MODELS</h3>
+            <p class="lead">Exclusive, detailed replicas, helmets, and limited edition items for the true fan.</p>
+            <button class="btn btn-primary w-50 mt-2">View Collectibles</button>
+          </div>
+        </div>
+      </a>
+    </div>
+    
+  </div>
+</main>
+
+<footer class="text-center text-lg-start py-4 mt-5">
+  <div class="container">
+    <p class="text-center p-3 mb-0">© 2024 APEX Gear. Race Ready.</p>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/admin.js"></script> 
+<script src="js/main.js"></script> 
+<script>
+    // MAXIMIZED JQUERY: Update navbar for logged in status
+    $(document).ready(function() {
+        const $navbarLinks = $('#main-navbar-links');
+        
+        // Remove the static Login link if found
+        $navbarLinks.find('a[href="login.html"]').parent().remove();
+
+        $.getJSON('api/get_user_info.php', function(data) {
+            if (data.isLoggedIn) {
+                // Add Dashboard/Logout links
+                $navbarLinks.append(`
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html"><i class="fas fa-user"></i> Dashboard (${data.username})</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="api/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                    `);
+            } else {
+                // Add static links for non-logged-in users
+                 $navbarLinks.append(`
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    </li>
+                    `);
+            }
+        });
+    });
+</script>
+</body>
+</html>

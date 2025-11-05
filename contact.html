@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APEX Gear - Contact Us</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+
+<?php include_once('admin_login.html'); ?>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+        <img src="https://via.placeholder.com/30x30/FFFFFF/FF4500?text=A" alt="APEX Logo" style="height: 30px; margin-right: 8px;">
+        APEX Gear
+    </a>
+    
+    <button onclick="loadAdminModal()" class="btn btn-sm"
+            style="color: var(--text-light); background-color: var(--primary-color); border: none; cursor: pointer; user-select: none; font-size: 0.75em; margin-left: 10px; padding: 4px 8px;">
+      ADMIN ACCESS
+    </button>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav" id="main-navbar-links">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="shop.html">Shop Merch 🏎️</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="categories.html">Teams</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="about.html">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="contact.html">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <h1 class="text-center mb-4">Contact APEX Support 💬</h1>
+      <p class="text-center lead mb-5">Have a question about an order, a product, or a team? We're here to help you get back on track!</p>
+      
+      <form id="contactForm" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="name" class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="name" required>
+          <div class="invalid-feedback">Please enter your name.</div>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="email" required>
+          <div class="invalid-feedback">Please enter a valid email address.</div>
+        </div>
+        <div class="mb-3">
+          <label for="subject" class="form-label">Subject</label>
+          <input type="text" class="form-control" id="subject" required>
+          <div class="invalid-feedback">Please enter a subject.</div>
+        </div>
+        <div class="mb-3">
+          <label for="message" class="form-label">Message</label>
+          <textarea class="form-control" id="message" rows="5" required></textarea>
+          <div class="invalid-feedback">Please enter your message.</div>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary btn-lg mt-3">Send Message <i class="fas fa-paper-plane"></i></button>
+        </div>
+      </form>
+      
+      <div class="mt-5 pt-3 text-center border-top">
+        <h4 class="text-secondary">Track Us Down</h4>
+        <p><i class="fas fa-phone-alt me-2 text-secondary"></i> +923494679295</p>
+        <p><i class="fas fa-map-marker-alt me-2 text-secondary"></i> Racetrack HQ, Prime City, Faisalabad, Pakistan</p>
+        <p class="social-icons">
+          <a href="#" class="text-dark me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+          <a href="#" class="text-dark me-3"><i class="fab fa-instagram fa-lg"></i></a>
+          <a href="#" class="text-dark me-3"><i class="fab fa-twitter fa-lg"></i></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="text-center text-lg-start py-4 mt-5">
+  <div class="container">
+    <p class="text-center p-3 mb-0">© 2024 APEX Gear. Race Ready.</p>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/admin.js"></script> 
+<script src="js/main.js"></script> 
+<script>
+  // Final, functional jQuery implementation for the Contact Form
+  $(document).ready(function() {
+    const $contactForm = $('#contactForm');
+    const $navbarLinks = $('#main-navbar-links');
+    
+    // 1. Update Navbar for logged in status
+    $.getJSON('api/get_user_info.php', function(data) {
+        // This handles removing the static Login link for consistency
+        $navbarLinks.find('a[href="login.html"]').parent().remove(); 
+
+        if (data.isLoggedIn) {
+            $navbarLinks.append(`
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html"><i class="fas fa-user"></i> Dashboard (${data.username})</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="api/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>`);
+        } else {
+            // Re-add the Login link if the user is logged out
+            $navbarLinks.append(`
+                <li class="nav-item">
+                    <a class="nav-link" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+                </li>`);
+        }
+    });
+
+    // 2. Contact Form Submission Handler (Sends to PHP API)
+    $contactForm.on('submit', function(event) {
+        event.preventDefault(); 
+        
+        // Ensure standard validation passes (using classes added by js/main.js)
+        if (!this.checkValidity()) {
+            $(this).addClass('was-validated');
+            return;
+        }
+        $(this).removeClass('was-validated');
+
+        const formData = {
+            name: $('#name').val(),
+            email: $('#email').val(),
+            subject: $('#subject').val(),
+            message: $('#message').val()
+        };
+        
+        // Send data via jQuery AJAX to the dedicated PHP API
+        $.ajax({
+            url: 'api/submit_contact.php',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(data) {
+                alert(data.message);
+                $contactForm.trigger('reset'); // Clear the form on success
+                $contactForm.removeClass('was-validated');
+            },
+            error: function(jqXHR) {
+                let errorMsg = "Error submitting message. Please check the server and database connection.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                    errorMsg = jqXHR.responseJSON.error;
+                }
+                alert(errorMsg);
+            }
+        });
+    });
+  });
+</script>
+</body>
+</html>

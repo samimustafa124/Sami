@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>APEX Gear - Your Cart (PKR)</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+
+<?php include_once('admin_login.html'); ?>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <img src="https://via.placeholder.com/30x30/FFFFFF/FF4500?text=A" alt="APEX Logo" style="height: 30px; margin-right: 8px;">
+            APEX Gear
+        </a>
+        
+        <button onclick="loadAdminModal()" class="btn btn-sm"
+            style="color: var(--text-light); background-color: var(--primary-color); border: none; cursor: pointer; user-select: none; font-size: 0.75em; margin-left: 10px; padding: 4px 8px;">
+          ADMIN ACCESS
+        </button>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav" id="main-navbar-links">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="shop.html">Shop Merch 🏎️</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="categories.html">Teams</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container my-5">
+        <h1 class="text-center mb-5">Your Racing Garage 🛠️</h1>
+        <div class="row">
+            <div class="col-lg-8" id="cart-items-column">
+                <div class="text-center my-5" id="cart-loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-accent text-light fw-bold">Order Summary</div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Subtotal: <span class="fw-bold" id="cart-subtotal">Rs. 0</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Shipping: <span class="fw-bold">Free</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Total: <span class="fw-bold fs-4 text-secondary" id="cart-total-price">Rs. 0</span>
+                            </li>
+                        </ul>
+                        <div class="d-grid mt-3">
+                            <button class="btn btn-primary btn-lg" id="checkout-btn" disabled>Proceed to Checkout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center text-lg-start py-4 mt-5">
+      <div class="container">
+        <p class="text-center p-3 mb-0">© 2024 APEX Gear. Race Ready. </p>
+      </div>
+    </footer>
+
+    <div class="modal fade" id="shippingModal" tabindex="-1" aria-labelledby="shippingModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title" id="shippingModalLabel">Confirm Shipping Information</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="shippingForm" novalidate>
+              <div class="mb-3">
+                <label for="shippingName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="shippingName" required>
+                <div class="invalid-feedback">Full Name is required.</div>
+              </div>
+              <div class="mb-3">
+                <label for="shippingAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="shippingAddress" required>
+                <div class="invalid-feedback">Address is required.</div>
+              </div>
+              <div class="mb-3">
+                <label for="shippingCity" class="form-label">City</label>
+                <input type="text" class="form-control" id="shippingCity" required>
+                <div class="invalid-feedback">City is required.</div>
+              </div>
+              <div class="mb-3">
+                <label for="shippingZipCode" class="form-label">Zip Code</label>
+                <input type="text" class="form-control" id="shippingZipCode" required>
+                <div class="invalid-feedback">Zip Code is required.</div>
+              </div>
+              <div class="mb-3">
+                <label for="shippingPhone" class="form-label">Phone</label>
+                <input type="tel" class="form-control" id="shippingPhone" required>
+                <div class="invalid-feedback">Phone number is required.</div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirmCheckoutBtn">Confirm and Place Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script> 
+    <script src="js/main.js"></script>
+    <script>
+        // MAXIMIZED JQUERY: Cart and Checkout Logic
+        $(document).ready(function() {
+            const $navbarLinks = $('#main-navbar-links');
+            const $cartItemsColumn = $('#cart-items-column');
+            const $checkoutBtn = $('#checkout-btn');
+            const $confirmCheckoutBtn = $('#confirmCheckoutBtn');
+            const $shippingForm = $('#shippingForm');
+            const shippingModal = new bootstrap.Modal(document.getElementById('shippingModal'));
+            let currentCartTotal = 0;
+
+            // 1. Check login status and update navbar
+            $.getJSON('api/get_user_info.php', function(data) {
+                // Ensure correct dynamic links are loaded
+                $navbarLinks.find('a[href="login.html"]').parent().remove(); 
+                $navbarLinks.find('a[href="contact.html"]').parent().remove();
+                $navbarLinks.find('a[href="about.html"]').parent().remove();
+
+                if (data.isLoggedIn) {
+                    $navbarLinks.append(`
+                        <li class="nav-item">
+                            <a class="nav-link" href="api/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html"><i class="fas fa-user"></i> Dashboard (${data.username})</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact</a>
+                        </li>
+                    `);
+                } else {
+                    $navbarLinks.append(`
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        </li>
+                    `);
+                }
+            });
+
+            // 2. Fetch and Render Cart (AJAX) - Corrected to use get_cart_data.php
+            function fetchAndRenderCart() {
+                // Display loading state
+                $cartItemsColumn.html($('#cart-loading').clone().show());
+                
+                $.ajax({
+                    // CORRECTED URL to the dedicated cart API
+                    url: 'api/get_cart_data.php', 
+                    method: 'GET',
+                    
+                    success: function(data) {
+                        $cartItemsColumn.empty();
+                        let itemsHTML = '';
+                        let subtotal = 0;
+                        
+                        const cartItems = data.items; // Use the 'items' key from the API response
+
+                        if (cartItems.length === 0) {
+                            $cartItemsColumn.html(`<div class="text-center my-5"><h4 class="text-muted">Your cart is empty. 😞</h4><a href="shop.html" class="btn btn-primary mt-3">Start Shopping</a></div>`);
+                            $checkoutBtn.prop('disabled', true);
+                            return;
+                        }
+
+                        $.each(cartItems, function(index, item) {
+                            const lineTotal = item.Price * item.Quantity;
+                            subtotal += lineTotal;
+                            
+                            // CRITICAL: Display Size if available
+                            const sizeDisplay = item.Size ? `<span class="badge bg-primary ms-2">${item.Size}</span>` : '';
+
+                            itemsHTML += `
+                                <div class="card mb-3 shadow-sm" data-product-id="${item.ProductID}">
+                                    <div class="row g-0">
+                                        <div class="col-4 d-flex align-items-center">
+                                            <img src="${item.ImageURL}" class="img-fluid rounded-start" alt="${item.Name}" style="height: 120px; object-fit: cover;">
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="card-body py-2">
+                                                <h5 class="card-title">${item.Name} ${sizeDisplay}</h5>
+                                                <p class="card-text fw-bold price text-secondary">Rs. ${parseFloat(item.Price).toLocaleString('en-US')} x ${item.Quantity}</p>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <small class="text-dark fw-bold">Line Total: Rs. ${lineTotal.toLocaleString('en-US')}</small>
+                                                    <button class="btn btn-sm btn-outline-danger remove-btn" data-product-id="${item.ProductID}" data-product-size="${item.Size || ''}">
+                                                        <i class="fas fa-trash-alt"></i> Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        currentCartTotal = subtotal;
+                        $cartItemsColumn.html(itemsHTML);
+                        $('#cart-subtotal').text(`Rs. ${subtotal.toLocaleString('en-US')}`);
+                        $('#cart-total-price').text(`Rs. ${subtotal.toLocaleString('en-US')}`);
+                        $checkoutBtn.prop('disabled', false);
+
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle server connection failure or 401/400 errors
+                        let errorMsg = 'Failed to load cart contents. Please check server connection.';
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                            errorMsg = jqXHR.responseJSON.error;
+                        }
+                        $cartItemsColumn.html(`<div class="alert alert-danger text-center my-5">${errorMsg}</div>`);
+                        $checkoutBtn.prop('disabled', true);
+                    }
+                });
+            }
+            
+            // Initial cart load
+            fetchAndRenderCart();
+
+
+            // 3. Remove Button Listener (Event Delegation via jQuery)
+            $cartItemsColumn.on('click', '.remove-btn', function(event) {
+                event.preventDefault();
+                const productId = $(this).data('product-id');
+                // We use size here because the Cart table's uniqueness is defined by (ProductID, Size)
+                const productSize = $(this).data('product-size') || null; 
+
+                if (!confirm('Are you sure you want to remove this item from your cart?')) {
+                    return;
+                }
+                
+                $.ajax({
+                    // Note: remove_from_cart.php currently removes ALL quantities of a ProductID 
+                    // regardless of size based on the logic provided in the original project. 
+                    // We maintain this behavior for compatibility, but pass the size just in case the API is updated later.
+                    url: 'api/remove_from_cart.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ productID: productId, size: productSize }), 
+                    success: function(data) {
+                        if (data.success) {
+                            alert('Item removed!');
+                            fetchAndRenderCart(); // Re-render the cart
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to connect to the server for removal.');
+                    }
+                });
+            });
+
+            // 4. Checkout Button - Check Login & Show Modal (jQuery)
+            $checkoutBtn.on('click', function() {
+                if (currentCartTotal <= 0) {
+                    alert('Your cart is empty. Please add items before checking out.');
+                    return;
+                }
+
+                $.getJSON('api/get_user_info.php', function(data) {
+                    if (!data.isLoggedIn) {
+                        alert('Please log in to proceed to checkout.');
+                        window.location.href = 'login.html';
+                    } else {
+                        shippingModal.show();
+                    }
+                }).fail(function() {
+                    alert('Could not verify login status. Try logging in again.');
+                });
+            });
+
+            // 5. Confirm Checkout Button - Validate & Process Order (jQuery AJAX)
+            $confirmCheckoutBtn.on('click', function() {
+                // Client-side validation
+                let isValid = true;
+                $shippingForm.find('input').each(function() {
+                    if ($(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    alert('Please fill in all required shipping fields.');
+                    return;
+                }
+
+                const shippingData = {
+                    shippingName: $('#shippingName').val(),
+                    shippingAddress: $('#shippingAddress').val(),
+                    shippingCity: $('#shippingCity').val(),
+                    shippingZipCode: $('#shippingZipCode').val(),
+                    shippingPhone: $('#shippingPhone').val()
+                };
+
+                // Send shipping data to the checkout PHP script
+                $.ajax({
+                    url: 'api/checkout.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(shippingData),
+                    success: function(data) {
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.href = 'dashboard.html'; // Redirect to dashboard after success
+                        } else {
+                            alert('Checkout failed: ' + data.error);
+                        }
+                    },
+                    error: function(jqXHR) {
+                        let errorMsg = "An error occurred during checkout.";
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                             errorMsg = jqXHR.responseJSON.error;
+                        } else if (jqXHR.status === 401) {
+                            errorMsg = "Unauthorized. Please log in again.";
+                        }
+                        alert(errorMsg);
+                    }
+                }).always(function() {
+                    shippingModal.hide();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

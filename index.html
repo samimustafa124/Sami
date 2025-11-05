@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APEX Gear - F1, MotoGP, GT3 Merchandise</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* INDEX SPECIFIC STYLES - Focused on clean presentation */
+    .hero-section {
+      /* Use a clean image with a subtle white gradient overlay for high contrast text */
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1579998064735-430349896009?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      height: 90vh; /* Taller hero section */
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: left; /* Text aligned left within the container */
+      padding-left: 5%;
+      border-bottom: 5px solid var(--secondary-color); /* Strong separation line */
+    }
+    .hero-content {
+        max-width: 600px;
+        padding: 20px;
+    }
+    .hero-section h1 { 
+        font-size: 4.5rem; 
+        font-weight: 700; 
+        color: var(--primary-color); /* Black text for max contrast */
+        line-height: 1;
+    }
+    .hero-section p { 
+        font-size: 1.5rem; 
+        font-weight: 400; 
+        color: var(--accent-color);
+        border-left: 5px solid var(--secondary-color); /* Racing stripe accent */
+        padding-left: 15px;
+        margin-top: 20px;
+    }
+    .featured-title {
+        font-size: 2.5rem;
+        border-bottom: 2px solid var(--secondary-color);
+        display: inline-block;
+        padding-bottom: 5px;
+        margin-bottom: 30px;
+    }
+    .card-body .badge {
+        font-weight: normal;
+        font-size: 0.8rem;
+    }
+    
+    /* ADDED STYLE FOR NAVBAR ALIGNMENT */
+    .navbar-brand {
+        display: flex;
+        align-items: center; /* Vertically centers content within the brand link */
+    }
+  </style>
+</head>
+<body>
+
+<?php include_once('admin_login.html'); ?> 
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+        <img src="logo.png" alt="APEX Logo" style="height: 45px; margin-right: 8px;">
+        APEX Gear
+    </a>
+    
+    <button onclick="loadAdminModal()" class="btn btn-sm"
+            style="color: var(--text-light); background-color: var(--primary-color); border: none; cursor: pointer; user-select: none; font-size: 0.75em; margin-left: 10px; padding: 4px 8px;">
+      ADMIN ACCESS
+    </button>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav" id="main-navbar-links">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="shop.html">Shop Merch 🏎️</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="categories.html">Teams</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="hero-section">
+  <div class="container">
+    <div class="hero-content">
+        <h1 class="display-1">Gear Up. Get Faster.</h1>
+        <p class="lead">Official merchandise and collectibles from the world's premier motorsport series: F1, MotoGP, and GT3.</p>
+        <a href="shop.html" class="btn btn-primary btn-lg mt-4 text-uppercase fw-bold">Shop the Full Grid 🚀</a>
+    </div>
+  </div>
+</header>
+
+<main class="container my-5">
+  <section class="mb-5">
+    <h2 class="text-center featured-title">Featured APEX Products</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4" id="featured-products-container">
+      <div class="d-flex justify-content-center align-items-center col-12" style="min-height: 200px;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="text-center text-lg-start py-4 mt-5">
+  <div class="container">
+    <p class="text-center p-3 mb-0">© 2024 APEX Gear. All prices in PKR. Race Ready.</p>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/admin.js"></script> 
+<script src="js/main.js"></script> 
+<script>
+  // MAXIMIZED JQUERY: The JavaScript logic remains the same as previously defined.
+  $(document).ready(function() {
+    const $productsContainer = $('#featured-products-container');
+    const $navbarLinks = $('#main-navbar-links');
+    const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
+    // --- Utility Functions ---
+
+    function renderSizeSelector(product) {
+        if (!product.IsWearable) {
+            return '<input type="hidden" class="product-size" value="" />';
+        }
+        
+        let options = SIZES.map(size => `<option value="${size}">${size}</option>`).join('');
+
+        return `
+            <div class="mb-3">
+                <select class="form-select form-select-sm product-size" required>
+                    <option value="" disabled selected>Select Size</option>
+                    ${options}
+                </select>
+                <div class="invalid-feedback">Please select a size.</div>
+            </div>`;
+    }
+
+    // --- Main Logic ---
+    
+    // 1. Check login status and update navbar using jQuery AJAX
+    $.getJSON('api/get_user_info.php', function(data) {
+      if (data.isLoggedIn) {
+        $navbarLinks.append(`
+          <li class="nav-item">
+            <a class="nav-link" href="dashboard.html"><i class="fas fa-user"></i> Dashboard (${data.username})</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="api/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact</a>
+          </li>`);
+      } else {
+        $navbarLinks.append(`
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+            </li>`);
+      }
+    });
+
+    // 2. Fetch products and render featured items using jQuery AJAX
+    $.getJSON('api/get_products.php', function(products) {
+      if (products.error) {
+        $productsContainer.html('<div class="col-12 text-center text-danger">Error fetching products: ' + products.error + '</div>');
+        return;
+      }
+
+      $productsContainer.empty();
+      // Ensure we only show the first 4 products
+      const featuredProducts = products.slice(0, 4);
+      let productsHtml = '';
+      
+      $.each(featuredProducts, function(index, product) {
+        const formattedPrice = parseFloat(product.Price).toLocaleString('en-US');
+        
+        productsHtml += `
+          <div class="col">
+            <div class="card h-100" data-product-id="${product.ProductID}" data-is-wearable="${product.IsWearable}">
+              <img src="${product.ImageURL}" class="card-img-top" alt="${product.Name}">
+              <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title">${product.Name}</h5>
+                    <p class="card-text small mb-2">${product.Description.substring(0, 50)}... 
+                        <span class="badge bg-secondary">${product.Category}</span>
+                        ${product.IsWearable ? '<span class="badge bg-danger">Wearable</span>' : ''}
+                    </p>
+                    ${renderSizeSelector(product)}
+                </div>
+                <div>
+                    <p class="card-text price mt-2">Rs. ${formattedPrice}</p>
+                    <a href="#" class="btn btn-primary w-100 add-to-cart-btn">Add to Cart 🛒</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      $productsContainer.html(productsHtml);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+      $productsContainer.html('<div class="col-12 text-center text-danger">Failed to connect to the product server.</div>');
+      console.error('AJAX Error:', textStatus, errorThrown);
+    });
+
+    // 3. Delegated Add-to-Cart Listener
+    $productsContainer.on('click', '.add-to-cart-btn', function(event) {
+      event.preventDefault();
+      const $card = $(this).closest('.card');
+      const productId = $card.data('product-id');
+      const isWearable = $card.data('is-wearable');
+      const $sizeSelect = $card.find('.product-size');
+      let selectedSize = $sizeSelect.val() || null; 
+
+      // Validation for wearables
+      if (isWearable && !selectedSize) {
+          alert('Please select a size before adding this item to the cart.');
+          $sizeSelect.addClass('is-invalid');
+          return;
+      }
+      $sizeSelect.removeClass('is-invalid');
+
+      $.ajax({
+        url: 'api/add_to_cart.php',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+            productID: productId,
+            size: selectedSize 
+        }),
+        success: function(data) {
+          alert(data.message);
+        },
+        error: function(jqXHR) {
+          let errorMsg = 'Failed to add item to cart: Check server connection.';
+          if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+             errorMsg = jqXHR.responseJSON.error;
+          }
+          alert(errorMsg);
+        }
+      });
+    });
+
+  });
+</script>
+</body>
+</html>

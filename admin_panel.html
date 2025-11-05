@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>APEX Gear - Admin Panel</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Admin Panel Specific Styles (Revised Layout) */
+        body { background-color: #F8F8F8; } 
+        h1, h2 { font-family: 'Oswald', sans-serif; }
+        .main-header-accent { 
+            background-color: var(--secondary-color); /* Orange-Red Accent */
+            color: white; 
+            padding: 1.5rem 0;
+        }
+        .main-header-accent h1 { color: white; }
+        .card { 
+            border: 1px solid #ddd; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .nav-tabs .nav-link { 
+            font-weight: 600; 
+            color: var(--primary-color) !important; 
+            border: none;
+            border-radius: 0;
+            margin-right: 5px;
+        }
+        .nav-tabs .nav-link.active { 
+            color: var(--secondary-color) !important; 
+            border-bottom: 3px solid var(--secondary-color) !important; /* Accent Underline */
+            background-color: white !important;
+        }
+        .content-card-header { 
+            background-color: var(--background-light); 
+            border-bottom: 2px solid #eee;
+            color: var(--primary-color);
+        }
+        .table-responsive { max-height: 60vh; overflow-y: auto; }
+        .status-badge { cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    // MAXIMIZED JQUERY: Check if admin is logged in via sessionStorage
+    if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
+        alert('Access Denied. Please log in as Admin.');
+        window.location.href = 'index.html';
+    }
+</script>
+
+<div class="container-fluid">
+    
+    <div class="main-header-accent mb-4">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="fs-3 m-0">APEX Gear | Admin Center <i class="fas fa-chart-line"></i></h1>
+                <div class="d-flex align-items-center">
+                    <div class="badge bg-dark text-white p-2 fw-normal me-3">Logged in as: ABID</div>
+                    <button class="btn btn-outline-light btn-sm" id="admin-logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+            <p class="lead pt-2 pb-0 mb-0 small text-light">Manage customer transactions and site contacts.</p>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="true"><i class="fas fa-box"></i> Orders</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab" aria-controls="users" aria-selected="false"><i class="fas fa-users"></i> Users</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false"><i class="fas fa-envelope"></i> Messages</button>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="tab-content container-fluid" id="adminTabsContent">
+        
+        <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+            <div class="card">
+                <div class="card-header content-card-header">
+                    <h2 class="h5 m-0">All Customer Orders</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="bg-light sticky-top">
+                                <tr>
+                                    <th scope="col"># ID</th>
+                                    <th scope="col">User ID</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Total (PKR)</th>
+                                    <th scope="col">Shipping To</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Contact</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <tr><td colspan="7" class="text-center text-muted py-5">Loading orders...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+            <div class="card">
+                <div class="card-header content-card-header">
+                    <h2 class="h5 m-0">Registered Users</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="bg-light sticky-top">
+                                <tr>
+                                    <th scope="col">User ID</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Registration Date</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <tr><td colspan="5" class="text-center text-muted py-5">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+            <div class="card">
+                <div class="card-header content-card-header">
+                    <h2 class="h5 m-0">Customer Messages</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="bg-light sticky-top">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Received</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Subject</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messages-table-body">
+                                <tr><td colspan="7" class="text-center text-muted py-5">Loading messages...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        </div>
+</div>
+
+<div class="modal fade" id="shippingDetailsModal" tabindex="-1" aria-labelledby="shippingDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="shippingDetailsModalLabel"><i class="fas fa-shipping-fast"></i> Shipping & Contact Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="shippingDetailsBody">
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/admin.js"></script> 
+<script>
+    // MAXIMIZED JQUERY: Logic for Admin Panel (Updated functionality)
+    $(document).ready(function() {
+        const $usersTable = $('#users-table-body');
+        const $ordersTable = $('#orders-table-body');
+        const $messagesTableBody = $('#messages-table-body');
+        // Removed reference to $orderItemsCard and $orderItemsTableBody
+        const $shippingDetailsModal = $('#shippingDetailsModal');
+        
+        // --- Utility Functions ---
+
+        function getStatusClass(status) {
+            switch (status) {
+                case 'Completed': return 'bg-success';
+                case 'Shipped': return 'bg-info';
+                case 'Cancelled': return 'bg-danger';
+                default: return 'bg-warning'; // Processing
+            }
+        }
+
+        // --- Fetch and Render Functions (AJAX) ---
+
+        function fetchAndRenderOrders() {
+            // Note: Total colspan reduced to 7 after removing 'Details' column
+            $ordersTable.html('<tr><td colspan="7" class="text-center text-muted py-5">Loading orders...</td></tr>');
+            $.getJSON('api/admin_handler.php?action=get_all_orders')
+                .done(function(orders) {
+                    $ordersTable.empty();
+                    if (orders.length === 0) {
+                        $ordersTable.html('<tr><td colspan="7" class="text-center text-muted py-5">No orders have been placed yet.</td></tr>');
+                        return;
+                    }
+                    
+                    let ordersHtml = '';
+                    $.each(orders, function(index, order) {
+                        const statusClass = getStatusClass(order.Status);
+                        // FIX: Ensure all shipping data fields are passed to the button
+                        ordersHtml += `
+                            <tr data-order-id="${order.OrderID}">
+                                <td>${order.OrderID}</td>
+                                <td>${order.UserID}</td>
+                                <td>${order.OrderDate.substring(0, 10)}</td>
+                                <td>Rs. ${parseFloat(order.TotalAmount).toLocaleString('en-US')}</td>
+                                <td>${order.ShippingName} (${order.ShippingCity})</td>
+                                <td>
+                                    <span class="badge status-badge ${statusClass}" 
+                                          data-order-id="${order.OrderID}"
+                                          data-current-status="${order.Status}">
+                                          ${order.Status}
+                                    </span>
+                                </td>
+                                
+                                <td>
+                                    <button class="btn btn-sm btn-info view-shipping-btn" 
+                                            data-shipping-name="${order.ShippingName}" 
+                                            data-shipping-address="${order.ShippingAddress}"
+                                            data-shipping-city="${order.ShippingCity}"
+                                            data-shipping-zipcode="${order.ShippingZipCode}"
+                                            data-shipping-phone="${order.ShippingPhone}">
+                                        <i class="fas fa-phone-volume"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    $ordersTable.html(ordersHtml);
+                })
+                .fail(function() {
+                    $ordersTable.html('<tr><td colspan="7" class="text-center text-danger py-5">Failed to load orders. Check API connection.</td></tr>');
+                });
+        }
+        
+        function fetchAndRenderUsers() {
+            $usersTable.html('<tr><td colspan="5" class="text-center text-muted py-5">Loading users...</td></tr>');
+            $.getJSON('api/admin_handler.php?action=get_all_users')
+                .done(function(users) {
+                    $usersTable.empty();
+                    if (users.length === 0) {
+                        $usersTable.html('<tr><td colspan="5" class="text-center text-muted py-5">No users found.</td></tr>');
+                        return;
+                    }
+                    
+                    let usersHtml = '';
+                    $.each(users, function(index, user) {
+                        // Skip the hardcoded admin user HAMAYAL
+                        if (user.Username.toUpperCase() === 'HAMAYAL') return true; 
+
+                        usersHtml += `
+                            <tr data-user-id="${user.UserID}">
+                                <td>${user.UserID}</td>
+                                <td>${user.Username}</td>
+                                <td>${user.Email}</td>
+                                <td>${user.CreatedAt.substring(0, 10)}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-user-btn" data-user-id="${user.UserID}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    $usersTable.html(usersHtml);
+                })
+                .fail(function() {
+                    $usersTable.html('<tr><td colspan="5" class="text-center text-danger py-5">Failed to load users. Check API connection.</td></tr>');
+                });
+        }
+
+        function fetchAndRenderMessages() {
+            $messagesTableBody.html('<tr><td colspan="7" class="text-center text-muted py-5">Loading messages...</td></tr>');
+
+            $.getJSON('api/admin_handler.php?action=get_messages')
+                .done(function(messages) {
+                    $messagesTableBody.empty();
+                    if (messages.length === 0) {
+                        $messagesTableBody.html('<tr><td colspan="7" class="text-center text-muted py-5">No new messages found.</td></tr>');
+                        return;
+                    }
+
+                    let messageHtml = '';
+                    $.each(messages, function(index, msg) {
+                        const isRead = msg.IsRead == 1;
+                        const status = isRead ? 'Read' : 'New';
+                        const statusClass = isRead ? 'bg-success' : 'bg-danger';
+                        
+                        messageHtml += `
+                            <tr data-message-id="${msg.MessageID}">
+                                <td>${msg.MessageID}</td>
+                                <td>${msg.ReceivedAt.substring(0, 10)}</td>
+                                <td>${msg.FullName}</td>
+                                <td>${msg.Email}</td>
+                                <td>${msg.Subject}</td>
+                                <td><span class="badge ${statusClass}">${status}</span></td>
+                                <td><button class="btn btn-sm btn-info view-message-btn" data-message-id="${msg.MessageID}" data-message-content="${msg.MessageContent.replace(/"/g, '&quot;')}"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                        `;
+                    });
+                    $messagesTableBody.html(messageHtml);
+                })
+                .fail(function() {
+                    $messagesTableBody.html('<tr><td colspan="7" class="text-center text-danger py-5">Failed to load messages. Check API.</td></tr>');
+                });
+        }
+        
+        // --- Event Handlers (CRUD/Actions) ---
+
+        // 1. Admin Logout
+        $('#admin-logout-btn').on('click', function() {
+            sessionStorage.removeItem('isAdminLoggedIn');
+            sessionStorage.removeItem('adminUser');
+            alert('Admin logged out successfully.');
+            window.location.href = 'index.html';
+        });
+
+        // 2. Tab Activation Listeners (To load data only when necessary)
+        $('#users-tab').on('shown.bs.tab', fetchAndRenderUsers);
+        $('#orders-tab').on('shown.bs.tab', fetchAndRenderOrders);
+        $('#messages-tab').on('shown.bs.tab', fetchAndRenderMessages);
+
+        // 3. Delete User Functionality (Delegated)
+        $usersTable.on('click', '.delete-user-btn', function() {
+            const userId = $(this).data('user-id');
+            const $row = $(this).closest('tr');
+
+            if (confirm(`Are you sure you want to delete User ID ${userId}? This cannot be undone.`)) {
+                $.ajax({
+                    url: 'api/admin_handler.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ action: 'delete_user', userId: userId }),
+                    success: function(data) {
+                        if (data.success) {
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                                alert(data.message);
+                            });
+                        } else {
+                            alert('Deletion failed: ' + data.error);
+                        }
+                    },
+                    error: function(jqXHR) {
+                        let error = jqXHR.responseJSON ? jqXHR.responseJSON.error : 'Server error.';
+                        alert('Error deleting user: ' + error);
+                    }
+                });
+            }
+        });
+
+        // 4. Order Status Update (Delegated)
+        $ordersTable.on('click', '.status-badge', function() {
+            const orderId = $(this).data('order-id');
+            const currentStatus = $(this).data('current-status');
+            
+            let newStatus = '';
+            if (currentStatus === 'Processing') newStatus = 'Shipped';
+            else if (currentStatus === 'Shipped') newStatus = 'Completed';
+            else if (currentStatus === 'Completed') { alert('Order is already Completed.'); return; }
+            else newStatus = 'Processing';
+
+            if (confirm(`Change status for Order #${orderId} from "${currentStatus}" to "${newStatus}"?`)) {
+                $.ajax({
+                    url: 'api/admin_handler.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ action: 'update_status', orderId: orderId, status: newStatus }),
+                    success: function(data) {
+                        if (data.success) {
+                            alert(data.message);
+                            fetchAndRenderOrders(); // Reload orders table instantly
+                        } else {
+                            alert('Status update failed: ' + data.error);
+                        }
+                    },
+                    error: function(jqXHR) {
+                        let error = jqXHR.responseJSON ? jqXHR.responseJSON.error : 'Server error.';
+                        alert('Error updating status: ' + error);
+                    }
+                });
+            }
+        });
+
+        // 5. View Order Items (REMOVED - Replaced by simplified shipping contact)
+        // Note: The logic for fetching order items is no longer tied to a button.
+
+        // 6. Hide Order Items Card (REMOVED)
+        
+        // 7. View Shipping Details Button (NEW FEATURE)
+        $ordersTable.on('click', '.view-shipping-btn', function() {
+            const data = $(this).data();
+            // Note: If you want to show item details, you must add an 'Items' button 
+            // and re-implement the AJAX call for 'get_order_items'
+            const detailsHtml = `
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Recipient:</strong> ${data.shippingName}</li>
+                    <li class="list-group-item"><strong>Address:</strong> ${data.shippingAddress}</li>
+                    <li class="list-group-item"><strong>City/Zip:</strong> ${data.shippingCity}, ${data.shippingZipcode}</li>
+                    <li class="list-group-item"><strong>Phone:</strong> ${data.shippingPhone}</li>
+                </ul>
+            `;
+            $('#shippingDetailsBody').html(detailsHtml);
+            $shippingDetailsModal.modal('show');
+        });
+
+        // 8. Listener for View Message button
+        $messagesTableBody.on('click', '.view-message-btn', function() {
+            const messageId = $(this).data('message-id');
+            const content = $(this).data('message-content');
+            
+            // Mark as read in the database
+            $.ajax({
+                url: 'api/admin_handler.php',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ action: 'mark_message_read', messageId: messageId }),
+                success: function() {
+                    alert(`Message ID #${messageId} - Content:\n\n${content}`);
+                    fetchAndRenderMessages();
+                },
+                error: function() {
+                    alert('Could not mark message as read, but here is the content:\n\n' + content);
+                }
+            });
+        });
+
+        // Initial Load (Default Tab)
+        fetchAndRenderOrders();
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
